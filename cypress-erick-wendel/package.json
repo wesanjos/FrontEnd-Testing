@@ -1,0 +1,17 @@
+{
+  "name": "test-cypress",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "engines": {
+    "node": "v21.7.3"
+  },
+  "scripts": {
+    "cypress:web": "npx cypress open",
+    "cypress:headless": "npx cypress run --browser electron"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
