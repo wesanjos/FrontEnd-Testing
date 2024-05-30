@@ -156,9 +156,58 @@ describe("Image Registration", () => {
       });
     });
 
-    it('Then The inputs should be cleared', () => {
-      registerForm.elements.titleInput().should('have.value', '');
-      registerForm.elements.imageUrlInput().should('have.value', '');
+    it("Then The inputs should be cleared", () => {
+      registerForm.elements.titleInput().should("have.value", "");
+      registerForm.elements.imageUrlInput().should("have.value", "");
+    });
+  });
+
+  describe("Submitting an image and updating the list", () => {
+    const input = {
+      title: "BR Alien",
+      url: "https://cdn.mos.cms.futurecdn.net/eM9EvWyDxXcnQTTyH8c8p5-1200-80.jpg",
+    };
+
+    it("Given I am on the image registration page", () => {
+      cy.visit("/");
+    });
+
+    it(`Then I have entered ${input.title} in the title field`, () => {
+      registerForm.typeTitle(input.title);
+    });
+
+    it(`Then I have entered ${input.url} in the URL field`, () => {
+      registerForm.typeUrl(input.url);
+    });
+
+    it("When I click the submit button", () => {
+      registerForm.clickSubmit();
+    });
+
+    it("And the list of registered images should be updated with the new item", () => {
+      cy.get("#card-list .card-img").should((elements) => {
+        const lastElement = elements[elements.length - 1];
+        const src = lastElement.getAttribute("src");
+        assert.strictEqual(src, input.url);
+      });
+    });
+
+    it("And the new item should be stored in the localStorage", () => {
+      cy.getAllLocalStorage().should((ls) => {
+        const currentLs = ls[window.location.origin];
+        const elements = JSON.parse(Object.values(currentLs));
+        const lastElement = elements[elements.length - 1];
+
+        assert.deepStrictEqual(lastElement, {
+          title: input.title,
+          imageUrl: input.url,
+        });
+      });
+    });
+
+    it("Then The inputs should be cleared", () => {
+      registerForm.elements.titleInput().should("have.value", "");
+      registerForm.elements.imageUrlInput().should("have.value", "");
     });
   });
 });
